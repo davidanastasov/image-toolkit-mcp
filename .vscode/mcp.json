@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "image-toolkit-mcp": {
+      "type": "stdio",
+      "command": "bun",
+      "args": ["src/server.ts"]
+    }
+  },
+  "inputs": []
+}

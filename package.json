@@ -1,0 +1,23 @@
+{
+  "name": "image-toolkit-mcp",
+  "module": "src/server.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun build src/server.ts --outdir dist --format esm --minify",
+    "start": "bun src/server.ts",
+    "dev": "bun --watch src/server.ts"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.0.0-alpha.2",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5",
+    "@cfworker/json-schema": "^4.1.1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0-alpha.2",
+    "zod": "^4.4.3"
+  }
+}
