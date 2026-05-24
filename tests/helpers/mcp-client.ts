@@ -1,6 +1,6 @@
-import { Client, StdioClientTransport } from "@modelcontextprotocol/client";
 import { afterAll } from "bun:test";
 import assert from "node:assert";
+import { Client, StdioClientTransport } from "@modelcontextprotocol/client";
 
 async function connectTestClient() {
   const transport = new StdioClientTransport({
@@ -14,7 +14,7 @@ async function connectTestClient() {
 }
 
 export async function createTestClient() {
-  let client = await connectTestClient();
+  const client = await connectTestClient();
 
   afterAll(async () => {
     await client.close();
