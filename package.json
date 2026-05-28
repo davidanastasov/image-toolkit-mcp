@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bun build src/server.ts --outdir dist --format esm --minify",
+    "build": "bun build src/server.ts --outdir dist --target node --format esm --packages external --minify",
     "start": "bun src/server.ts",
     "dev": "bun --watch src/server.ts",
     "format:check": "biome check",
