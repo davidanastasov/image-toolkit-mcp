@@ -15,6 +15,7 @@ describe("environment config", () => {
         "warn",
         "error",
         "fatal",
+        "silent",
       ] as const;
 
       for (const level of expectedLogLevels) {
