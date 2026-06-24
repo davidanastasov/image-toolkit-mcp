@@ -153,6 +153,17 @@ export class ImagePipeline {
     }
   }
 
+  resize(options: {
+    width?: number;
+    height?: number;
+    fit?: "cover" | "contain" | "fill" | "inside" | "outside";
+    position?: string;
+    background?: sharp.Color;
+  }): this {
+    this.pipeline = this.pipeline.resize(options);
+    return this;
+  }
+
   convert(format: string, quality: number = 100): this {
     switch (format) {
       case "jpeg":

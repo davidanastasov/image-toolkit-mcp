@@ -31,3 +31,11 @@ export const FORMAT_EXT: Record<string, string> = {
   gif: ".gif",
   heif: ".heif",
 };
+
+export const FIT_OPTIONS = [
+  "cover",
+  "contain",
+  "fill",
+  "inside",
+  "outside",
+] as const;
