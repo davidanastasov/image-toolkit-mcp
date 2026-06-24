@@ -141,12 +141,13 @@ function buildWarnings(
 
 export class ImagePipeline {
   private pipeline: sharp.Sharp;
+  private imagePath?: string;
   private inputSize: number = 0;
 
   constructor(input: string | Buffer) {
     this.pipeline = sharp(input);
-
     if (typeof input === "string") {
+      this.imagePath = input;
       this.inputSize = statSafe(input)?.size ?? 0;
     } else {
       this.inputSize = input.length;
@@ -164,7 +165,18 @@ export class ImagePipeline {
     return this;
   }
 
-  convert(format: string, quality: number = 100): this {
+  extend(options: {
+    top?: number;
+    left?: number;
+    bottom?: number;
+    right?: number;
+    background?: sharp.Color;
+  }): this {
+    this.pipeline = this.pipeline.extend(options);
+    return this;
+  }
+
+  convert(format: string, quality: number = 80): this {
     switch (format) {
       case "jpeg":
         this.pipeline = this.pipeline.jpeg({ quality, mozjpeg: true });
@@ -173,7 +185,7 @@ export class ImagePipeline {
         this.pipeline = this.pipeline.webp({ quality });
         break;
       case "png":
-        this.pipeline = this.pipeline.png({ quality });
+        this.pipeline = this.pipeline.png(); // Lossless configuration for conversions
         break;
       case "avif":
         this.pipeline = this.pipeline.avif({ quality });
@@ -192,7 +204,7 @@ export class ImagePipeline {
     return this;
   }
 
-  compress(format: string, quality: number = 100): this {
+  compress(format: string, quality: number = 80): this {
     switch (format) {
       case "jpeg":
         this.pipeline = this.pipeline.jpeg({ quality, mozjpeg: true });
@@ -223,35 +235,28 @@ export class ImagePipeline {
     return this;
   }
 
+  stripMetadata(): this {
+    // @ts-ignore
+    this.pipeline = this.pipeline.withMetadata(false);
+    return this;
+  }
+
   async write(
     outputPath: string,
   ): Promise<{ size: number; meta: sharp.Metadata }> {
     await this.pipeline.toFile(outputPath);
-
     const meta = await sharp(outputPath).metadata();
     const size = statSafe(outputPath)?.size ?? 0;
     return { size, meta };
   }
 
+  async toBuffer(): Promise<{ buffer: Buffer; info: sharp.OutputInfo }> {
+    // @ts-ignore
+    return this.pipeline.toBuffer({ resolveWithObject: true });
+  }
+
   async metadata(): Promise<sharp.Metadata> {
-    let meta: sharp.Metadata;
-    try {
-      meta = await this.pipeline.metadata();
-    } catch {
-      throw new ImageProcessingError(
-        ErrorCode.UNSUPPORTED_FORMAT,
-        `Cannot read image metadata — file may be corrupt or an unsupported format. Supported formats: ${[...SUPPORTED_FORMATS].join(", ")}`,
-      );
-    }
-
-    if (!SUPPORTED_FORMATS.has(meta.format)) {
-      throw new ImageProcessingError(
-        ErrorCode.UNSUPPORTED_FORMAT,
-        `Unsupported image format: ${meta.format}. Supported formats: ${[...SUPPORTED_FORMATS].join(", ")}`,
-      );
-    }
-
-    return meta;
+    return this.pipeline.metadata();
   }
 
   getInputSize(): number {
