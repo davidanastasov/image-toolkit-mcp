@@ -3,6 +3,7 @@ import { registerImageCompressTool } from "./image-compress";
 import { registerImageConvertTool } from "./image-convert";
 import { registerImageHashTool } from "./image-hash";
 import { registerImageResizeTool } from "./image-resize";
+import { registerImageSrcsetTool } from "./image-srcset";
 import { registerMetadataReadTool } from "./metadata-read";
 
 export function registerAllTools(server: McpServer) {
@@ -11,4 +12,5 @@ export function registerAllTools(server: McpServer) {
   registerImageCompressTool(server);
   registerImageConvertTool(server);
   registerImageResizeTool(server);
+  registerImageSrcsetTool(server);
 }
