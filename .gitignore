@@ -9,3 +9,6 @@ docs/
 .claude
 .agents
 skills-lock.json
+
+# Test artifacts
+.test-output

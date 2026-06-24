@@ -20,3 +20,14 @@ export const EXIF_PICK_KEYS = [
   "FNumber",
   "Flash",
 ] as const;
+
+/** Maps Sharp format names to canonical file extensions. */
+export const FORMAT_EXT: Record<string, string> = {
+  jpeg: ".jpg",
+  png: ".png",
+  webp: ".webp",
+  avif: ".avif",
+  tiff: ".tiff",
+  gif: ".gif",
+  heif: ".heif",
+};

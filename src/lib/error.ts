@@ -5,6 +5,7 @@ export const ErrorCode = {
   INVALID_INPUT: "INVALID_INPUT",
   PROCESSING_FAILED: "PROCESSING_FAILED",
   OUTPUT_NOT_WRITABLE: "OUTPUT_NOT_WRITABLE",
+  OUTPUT_FILE_EXISTS: "OUTPUT_FILE_EXISTS",
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

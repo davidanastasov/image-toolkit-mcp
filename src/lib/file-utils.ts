@@ -8,3 +8,17 @@ export function statSafe(p: string): Stats | null {
     return null;
   }
 }
+
+/** Computes byte savings and percentage reduction between two file sizes. */
+export function sizeSavings(
+  inputBytes: number,
+  outputBytes: number,
+): { savings_bytes: number; savings_percent: number } {
+  const savings_bytes = inputBytes - outputBytes;
+  const savings_percent =
+    inputBytes > 0
+      ? parseFloat(((savings_bytes / inputBytes) * 100).toFixed(1))
+      : 0;
+
+  return { savings_bytes, savings_percent };
+}
