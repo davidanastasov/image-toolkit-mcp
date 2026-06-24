@@ -181,6 +181,37 @@ export class ImagePipeline {
     return this;
   }
 
+  compress(format: string, quality: number = 100): this {
+    switch (format) {
+      case "jpeg":
+        this.pipeline = this.pipeline.jpeg({ quality, mozjpeg: true });
+        break;
+      case "webp":
+        this.pipeline = this.pipeline.webp({ quality });
+        break;
+      case "png":
+        this.pipeline =
+          quality < 100
+            ? this.pipeline.png({ quality, palette: true })
+            : this.pipeline.png({ compressionLevel: 9 });
+        break;
+      case "avif":
+        this.pipeline = this.pipeline.avif({ quality });
+        break;
+      case "tiff":
+        this.pipeline = this.pipeline.tiff({ quality });
+        break;
+      case "gif":
+        this.pipeline = this.pipeline.gif();
+        break;
+      case "heif":
+      case "heic":
+        this.pipeline = this.pipeline.heif({ quality });
+        break;
+    }
+    return this;
+  }
+
   async write(
     outputPath: string,
   ): Promise<{ size: number; meta: sharp.Metadata }> {
