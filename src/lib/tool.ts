@@ -1,8 +1,15 @@
-import type { CallToolResult } from "@modelcontextprotocol/server";
-import { ErrorCode, ToolError } from "./error";
+import type {
+  CallToolResult,
+  ContentBlock,
+  ServerContext,
+} from "@modelcontextprotocol/server";
+import { ErrorCode, ImageProcessingError, ToolError } from "./error";
 import { logger } from "./logger";
 
-function toolError(code: ErrorCode, message: string): CallToolResult {
+function toolError(
+  code: ErrorCode,
+  message: string,
+): CustomCallToolResult<never> {
   return {
     content: [
       { type: "text", text: JSON.stringify({ error: true, code, message }) },
@@ -11,9 +18,21 @@ function toolError(code: ErrorCode, message: string): CallToolResult {
   };
 }
 
-export function handle<T = void>(
-  handler: (input: T) => Promise<CallToolResult>,
-): (input: T) => Promise<CallToolResult> {
+type CustomCallToolResult<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = {
+  content: ContentBlock[];
+  structuredContent?: T;
+  isError?: boolean;
+  _meta?: Record<string, unknown>;
+};
+
+export function handle<
+  TInput = void,
+  TOutput extends Record<string, unknown> = Record<string, unknown>,
+>(
+  handler: (input: TInput) => Promise<CustomCallToolResult<TOutput>>,
+): (input: TInput) => Promise<CustomCallToolResult<TOutput>> {
   return async (input) => {
     const start = performance.now();
 
@@ -29,7 +48,7 @@ export function handle<T = void>(
     } catch (err) {
       const duration = `${(performance.now() - start).toFixed(0)}ms`;
 
-      if (err instanceof ToolError) {
+      if (err instanceof ToolError || err instanceof ImageProcessingError) {
         logger.warn(
           { code: err.code, cause: err.cause, duration },
           err.message,
@@ -46,3 +65,8 @@ export function handle<T = void>(
     }
   };
 }
+
+export type ToolHandler<TInput = object> = (
+  args: TInput,
+  ctx: ServerContext,
+) => Promise<CallToolResult>;

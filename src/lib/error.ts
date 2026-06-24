@@ -9,6 +9,9 @@ export const ErrorCode = {
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
+/**
+ * Used as a tool error return type in the MCP protocol
+ */
 export class ToolError extends Error {
   constructor(
     public readonly code: ErrorCode,
@@ -17,5 +20,19 @@ export class ToolError extends Error {
   ) {
     super(message, { cause });
     this.name = "ToolError";
+  }
+}
+
+/**
+ * Used internally in the image processing pipeline
+ */
+export class ImageProcessingError extends Error {
+  constructor(
+    public readonly code: ErrorCode,
+    message: string,
+    cause?: unknown,
+  ) {
+    super(message, { cause });
+    this.name = "ImageProcessingError";
   }
 }
